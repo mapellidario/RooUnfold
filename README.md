@@ -3,9 +3,6 @@
 
 Fork from http://hepunx.rl.ac.uk/~adye/software/unfold/RooUnfold.html
 
-[![build status](https://travis-ci.org/kreczko/RooUnfold.svg?branch=master)](https://travis-ci.org/kreczko/RooUnfold)
-
-
 RooUnfold is a framework for unfolding (AKA "deconvolution" or "unsmearing").
 It currently implements several methods: iterative (Bayes),
 singular value decomposition (SVD), unregularised matrix inversion,
@@ -22,11 +19,23 @@ RooUnfold was written by Tim Adye, Kerstin Tackmann, and Fergus Wilson.
 ## Building
 Since version 2 RooUnfold is using cmake to find dependencies and create the MakeFile:
 ```shell
-cmake CMakeLists.txt
-make jobs=2
+mkdir build
+cd build
+cmake ..
+make
 ```
 
 to build the RooUnfold shared library.
+
+If you want to install it in system directories, I suggest using GNU Stow
+
+```
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/stow/roounfold ..
+make
+sudo make install
+cd /usr/local/stow/
+sudo stow roounfold
+```
 
 ### Tests
 In order to run the boost tests for RooUnfold simply
@@ -46,9 +55,15 @@ If you want to run specific tests you can do this with
 
 RooUnfoldExample.cxx makes a simple test of RooUnfold.
 
-  % root
-  root [0] .L examples/RooUnfoldExample.cxx
-  root [1] gSystem->Load("libRooUnfold.so");
-  root [2] RooUnfoldExample()
+After having installed RooUnfold properly, navigate to the root directory of the source code of RooUnfold and run:
+
+```
+root -l
+> root [0] .L examples/RooUnfoldExample.cxx
+> root [1] gSystem->Load("libRooUnfold.so");
+> root [2] RooUnfoldExample()
+```
+
+## More Examples and Documentation
 
 See the web page (http://hepunx.rl.ac.uk/~adye/software/unfold/RooUnfold.html) for more examples and documentation.

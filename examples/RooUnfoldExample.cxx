@@ -19,8 +19,8 @@ using std::endl;
 
 #include "../include/RooUnfoldResponse.h"
 #include "../include/RooUnfoldBayes.h"
-//#include "RooUnfoldSvd.h"
-//#include "RooUnfoldTUnfold.h"
+#include "../include/RooUnfoldSvd.h"
+#include "../include/RooUnfoldTUnfold.h"
 #endif
 
 //==============================================================================

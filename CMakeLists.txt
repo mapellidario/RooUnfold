@@ -4,29 +4,28 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0 FATAL_ERROR)
 set(PROJECT_NAME_STR RooUnfold)
 set(PROJECT_LIB_NAME ${PROJECT_NAME_STR})
 PROJECT(${PROJECT_NAME_STR})
-include_directories(include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-set(CINTFILE ${PROJECT_NAME_STR}Dict.cxx)
 file(GLOB LINK_DEF_FILE include/*_LinkDef.h)
 file(GLOB HEADER_FILES include/*.h)
 list(REMOVE_ITEM HEADER_FILES ${LINK_DEF_FILE})
 
-
 if((CMAKE_SYSTEM_PROCESSOR MATCHES "i386") AND (CMAKE_SIZEOF_VOID_P EQUAL 8) AND (APPLE))
-	set(CMAKE_OSX_ARCHITECTURES "x86_64")
-	MESSAGE(STATUS "Building ${PROJECT_NAME_STR} for ${CMAKE_OSX_ARCHITECTURES} architecture on ${CMAKE_SYSTEM_NAME}")
+set(CMAKE_OSX_ARCHITECTURES "x86_64")
+MESSAGE(STATUS "Building ${PROJECT_NAME_STR} for ${CMAKE_OSX_ARCHITECTURES} architecture on ${CMAKE_SYSTEM_NAME}")
 else()
-	MESSAGE(STATUS "Building ${PROJECT_NAME_STR} on ${CMAKE_SYSTEM_NAME}")
+MESSAGE(STATUS "Building ${PROJECT_NAME_STR} on ${CMAKE_SYSTEM_NAME}")
 endif()
 MESSAGE(STATUS "Using compiler ${CMAKE_CXX_COMPILER_ID}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 MESSAGE(STATUS "Using CMAKE module path ${CMAKE_SOURCE_DIR}")
 
 # get ROOT
-find_package(ROOT "5.34" REQUIRED)
+# the root version can be lowered, but it is not tested
+find_package(ROOT "6.16" REQUIRED COMPONENTS Unfold)
 MESSAGE(STATUS "** ROOT Include path: ${ROOT_INCLUDE_DIRS}")
 MESSAGE(STATUS "** ROOT Library path: ${ROOT_LIBRARY_DIRS}")
-MESSAGE(STATUS "** ROOT Libraries: ${ROOT_LIBRARIES}")
+MESSAGE(STATUS "** ROOT Libraries:    ${ROOT_LIBRARIES}")
 
 include_directories(${ROOT_INCLUDE_DIRS})
 link_directories(${ROOT_LIBRARY_DIRS})
@@ -39,6 +38,8 @@ set(ROOT_DICT_OUTPUT_DIR ${PROJECT_SOURCE_DIR})
 LIST( APPEND ROOT_DICT_INPUT_HEADERS ${LINK_DEF_FILE} )
 
 # generate dictionary sources using rootcint 
+set(CINTFILE lib${PROJECT_NAME_STR}.cxx)
+set(CINTDICT lib${PROJECT_NAME_STR}_rdict.pcm)
 GEN_ROOT_DICT_SOURCE( ${CINTFILE} ) 
 
 # get boost
@@ -70,7 +71,12 @@ target_link_libraries(${PROJECT_LIB_NAME}
 	 ${ROOT_LIBRARIES}
 	 )
 	 
-# tests
+# install
+install(DIRECTORY include/ DESTINATION include)
+install(TARGETS ${PROJECT_LIB_NAME} DESTINATION lib)
+install(FILES ${CINTDICT} DESTINATION lib)
+
+# # tests
 enable_testing()
 set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
 include_directories(${COMMON_INCLUDES})
@@ -78,7 +84,7 @@ file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
 add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES})
 target_link_libraries(${PROJECT_TEST_NAME}
 	 ${Boost_LIBRARIES}
-	 ${ROOT_LIBRARIES}
+	 ${ROOT_LIBRARIES} Unfold
 	 ${PROJECT_LIB_NAME}
 	 )
 

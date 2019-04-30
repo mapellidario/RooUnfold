@@ -14,8 +14,9 @@ rootdict
 RooUnfold_test
 Makefile
 *~
-*Dict.cxx
-*Dict_rdict.pcm
+lib*.cxx
+lib*_rdict.pcm
 Test/*
 /Test/
 *.pyc
+.vscode/
