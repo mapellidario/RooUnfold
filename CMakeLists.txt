@@ -68,7 +68,7 @@ LIST(APPEND SRC ${ROOT_DICT_OUTPUT_SOURCES} )
 add_library(${PROJECT_LIB_NAME} SHARED ${SRC})
 target_link_libraries(${PROJECT_LIB_NAME}
 	 ${Boost_LIBRARIES}
-	 ${ROOT_LIBRARIES}
+	 ${ROOT_LIBRARIES} Unfold
 	 )
 	 
 # install
